@@ -114,7 +114,7 @@ export default function Login() {
   };
 
   return (
-    <div style={{
+    <div className="login-shell" style={{
       minHeight: "100vh",
       display: "flex",
       background: "linear-gradient(135deg, #060a12 0%, #0a1628 50%, #060a12 100%)",
@@ -131,7 +131,8 @@ export default function Login() {
         padding: "60px",
         background: "linear-gradient(160deg, rgba(0,180,216,0.07) 0%, transparent 60%)",
         borderRight: "1px solid rgba(255,255,255,0.05)",
-        minWidth: 0
+        minWidth: 0,
+        minHeight: "100vh"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "56px" }}>
           <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "linear-gradient(135deg, #00b4d8, #7209b7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -172,8 +173,9 @@ export default function Login() {
       </div>
 
       {/* Right Auth Panel */}
-      <div style={{
+      <div className="login-panel" style={{
         width: "480px",
+        maxWidth: "100%",
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",
@@ -181,7 +183,8 @@ export default function Login() {
         padding: "48px 40px",
         backgroundColor: "rgba(8,12,22,0.97)",
         borderLeft: "1px solid rgba(255,255,255,0.06)",
-        overflowY: "auto"
+        overflowY: "auto",
+        minHeight: "100vh"
       }}>
 
         {/* ── STEP 1: Role Selection ── */}
@@ -199,6 +202,7 @@ export default function Login() {
                 <button
                   key={role}
                   onClick={() => handleRoleSelect(role)}
+                  className="login-role-button"
                   style={{
                     display: "flex", alignItems: "center", gap: "14px",
                     padding: "14px 16px", borderRadius: "10px",
@@ -211,9 +215,9 @@ export default function Login() {
                   onMouseOut={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; }}
                 >
                   <span style={{ fontSize: "1.4rem", width: "36px", textAlign: "center", flexShrink: 0 }}>{info.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.88rem" }}>{role}</div>
-                    <div style={{ fontSize: "0.73rem", color: "rgba(255,255,255,0.38)", marginTop: "2px" }}>{info.desc}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="login-role-label" style={{ fontWeight: 700, fontSize: "0.88rem" }}>{role}</div>
+                    <div style={{ fontSize: "0.73rem", color: "rgba(255,255,255,0.38)", marginTop: "2px", lineHeight: 1.4 }}>{info.desc}</div>
                   </div>
                   {STAFF_ROLES.includes(role) && (
                     <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.65rem", color: "rgba(255,255,255,0.25)", flexShrink: 0 }}>
@@ -381,7 +385,16 @@ export default function Login() {
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 768px) { .login-left-panel { display: none !important; } }
+        @media (max-width: 900px) {
+          .login-left-panel { display: none !important; }
+          .login-shell { flex-direction: column; }
+        }
+        @media (max-width: 640px) {
+          .login-shell { min-height: 100vh; }
+          .login-panel { padding: 24px 18px !important; width: 100% !important; }
+          .login-role-button { padding: 12px 14px !important; }
+          .login-role-label { font-size: 0.8rem !important; }
+        }
       `}</style>
     </div>
   );

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -76,11 +77,17 @@ function RequireRole({ path, children }) {
 }
 
 function AppShell({ children, path }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="app-container">
-      <Sidebar />
+      <div
+        className={`sidebar-backdrop ${isSidebarOpen ? "active" : ""}`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
+      <Sidebar isMobileOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="main-content">
-        <Navbar />
+        <Navbar onToggleSidebar={() => setIsSidebarOpen((value) => !value)} />
         <div className="content-body">
           <RequireRole path={path}>{children}</RequireRole>
         </div>

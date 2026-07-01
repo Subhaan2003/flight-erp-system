@@ -19,7 +19,7 @@ import {
   FaSignOutAlt
 } from "react-icons/fa";
 
-export default function Sidebar() {
+export default function Sidebar({ isMobileOpen = false, onClose }) {
   const { currentUser, logout } = useAuth();
   
   if (!currentUser) return null;
@@ -48,7 +48,7 @@ export default function Sidebar() {
   );
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isMobileOpen ? "open" : ""}`}>
       <div className="sidebar-header">
         <span style={{ fontSize: "1.6rem" }}>✈️</span>
         <div className="sidebar-brand">AeroERP Systems</div>
@@ -60,6 +60,7 @@ export default function Sidebar() {
             key={item.path} 
             to={item.path} 
             className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            onClick={onClose}
           >
             <span className="sidebar-link-icon" style={{ fontSize: '1.1rem', display: 'flex' }}>
               {item.icon}

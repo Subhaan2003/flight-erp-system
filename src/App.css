@@ -2,16 +2,18 @@
 .app-container {
   display: flex;
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
   background-color: var(--bg-app);
 }
 
@@ -19,6 +21,11 @@
   padding: 24px;
   flex: 1;
   animation: fadeIn 0.4s ease-out;
+  width: 100%;
+}
+
+.sidebar-backdrop {
+  display: none;
 }
 
 /* Sidebar Styling */
@@ -30,8 +37,9 @@
   flex-direction: column;
   height: 100vh;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  transition: width 0.3s ease;
+  z-index: 20;
+  transition: transform 0.3s ease, width 0.3s ease;
+  flex-shrink: 0;
 }
 
 .sidebar-header {
@@ -95,14 +103,15 @@
 
 /* Navbar Top Panel */
 .navbar {
-  height: 70px;
+  min-height: 70px;
   background-color: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
-  padding: 0 24px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: var(--shadow-sm);
+  gap: 16px;
 }
 
 .navbar-left {
@@ -148,7 +157,11 @@
   border: 1px solid var(--bg-card);
 }
 
-/* Page Header Panel */
+/* Responsive utility classes */
+.mobile-menu-toggle {
+  display: none;
+}
+
 .page-header {
   margin-bottom: 24px;
   display: flex;
@@ -317,4 +330,161 @@
   padding: 10px;
   gap: 10px;
   background-color: var(--bg-input);
+}
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-table {
+  min-width: 620px;
+}
+
+.form-input,
+textarea,
+select {
+  width: 100%;
+  min-height: 44px;
+  font-size: 16px;
+}
+
+button,
+[role="button"] {
+  min-height: 44px;
+}
+
+@media (max-width: 1024px) {
+  .content-body {
+    padding: 18px;
+  }
+
+  .navbar {
+    padding: 14px 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    width: min(82vw, 280px);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 8, 23, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+    transition: opacity 0.2s ease;
+  }
+
+  .sidebar-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+  }
+
+  .navbar-right {
+    gap: 10px;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .content-body {
+    padding: 14px;
+  }
+
+  .navbar {
+    padding: 12px 14px;
+    align-items: flex-start;
+  }
+
+  .navbar-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .navbar-left h1 {
+    font-size: 1.05rem !important;
+    line-height: 1.3;
+  }
+
+  .navbar-left p {
+    font-size: 0.72rem !important;
+  }
+
+  .navbar-right {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header-title h2 {
+    font-size: 1.3rem;
+  }
+
+  .glass-card {
+    padding: 16px;
+  }
+
+  .chat-window {
+    height: 320px;
+  }
+
+  .boarding-pass-card {
+    padding: 16px;
+  }
+
+  .boarding-pass-body {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .seat-map-grid {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .content-body {
+    padding: 10px;
+  }
+
+  .navbar {
+    padding: 10px 12px;
+  }
+
+  .navbar-right {
+    justify-content: space-between;
+  }
+
+  .icon-button {
+    padding: 5px;
+    font-size: 1.1rem;
+  }
+
+  .sidebar-link {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
 }

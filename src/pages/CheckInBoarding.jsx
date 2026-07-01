@@ -33,6 +33,15 @@ export default function CheckInBoarding() {
   const searchByPNR = () => {
     const ticket = tickets.find(t => t.pnr.toLowerCase() === pnrSearch.toLowerCase() || t.id === pnrSearch);
     if (!ticket) { alert("No ticket found with this PNR."); return; }
+    
+    if (currentUser.role === "Passenger") {
+      const passenger = passengers.find(p => p.id === ticket.passengerId);
+      if (!passenger || passenger.email.toLowerCase() !== currentUser.email.toLowerCase()) {
+        alert("Access Denied: This ticket does not belong to you.");
+        return;
+      }
+    }
+
     const passenger = passengers.find(p => p.id === ticket.passengerId);
     const flight = flights.find(f => f.id === ticket.flightId);
     setFoundTicket(ticket);

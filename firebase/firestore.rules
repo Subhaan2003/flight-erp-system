@@ -14,6 +14,14 @@ service cloud.firestore {
       return isSignedIn() && userDoc().role in roles;
     }
 
+    function isOwner(passengerId) {
+      return isSignedIn() && get(/databases/$(database)/documents/passengers/$(passengerId)).data.email == request.auth.token.email;
+    }
+
+    function isTicketOwner(ticketId) {
+      return isOwner(get(/databases/$(database)/documents/tickets/$(ticketId)).data.passengerId);
+    }
+
     match /users/{userId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn() && request.auth.uid == userId;
@@ -32,10 +40,58 @@ service cloud.firestore {
       allow update, delete: if hasRole(['Super Admin']);
     }
 
+    match /passengers/{id} {
+      allow read, write: if !hasRole(['Passenger']) || 
+        (isSignedIn() && resource.data.email == request.auth.token.email) ||
+        (isSignedIn() && request.resource.data.email == request.auth.token.email);
+    }
+
+    match /tickets/{id} {
+      allow read: if !hasRole(['Passenger']) || isOwner(resource.data.passengerId);
+      allow create, update: if !hasRole(['Passenger']) || isOwner(request.resource.data.passengerId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /bookings/{id} {
+      allow read: if !hasRole(['Passenger']) || isOwner(resource.data.passengerId);
+      allow create, update: if !hasRole(['Passenger']) || isOwner(request.resource.data.passengerId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /payments/{id} {
+      allow read: if !hasRole(['Passenger']) || isOwner(resource.data.passengerId);
+      allow create, update: if !hasRole(['Passenger']) || isOwner(request.resource.data.passengerId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /baggage/{id} {
+      allow read: if !hasRole(['Passenger']) || isOwner(resource.data.passengerId);
+      allow create, update: if !hasRole(['Passenger']) || isOwner(request.resource.data.passengerId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /complaints/{id} {
+      allow read: if !hasRole(['Passenger']) || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow create, update: if !hasRole(['Passenger']) || (isSignedIn() && request.resource.data.email == request.auth.token.email);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /checkins/{id} {
+      allow read: if !hasRole(['Passenger']) || isTicketOwner(resource.data.ticketId);
+      allow create, update: if !hasRole(['Passenger']) || isTicketOwner(request.resource.data.ticketId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
+    match /boarding/{id} {
+      allow read: if !hasRole(['Passenger']) || isTicketOwner(resource.data.ticketId);
+      allow create, update: if !hasRole(['Passenger']) || isTicketOwner(request.resource.data.ticketId);
+      allow delete: if !hasRole(['Passenger']);
+    }
+
     match /{collection}/{docId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isSignedIn() &&
-        !collection.matches('users|settings|logs');
+        !collection.matches('users|settings|logs|passengers|tickets|bookings|payments|baggage|complaints|checkins|boarding');
     }
   }
 }

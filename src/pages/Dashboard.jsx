@@ -14,7 +14,6 @@ import {
 export default function Dashboard() {
   const { currentUser } = useAuth();
   
-  // Real-time Database Collections
   const [flights] = useCollection("flights");
   const [employees] = useCollection("employees");
   const [aircrafts] = useCollection("aircrafts");
@@ -24,6 +23,7 @@ export default function Dashboard() {
   const [leaves] = useCollection("leaveRequests");
   const [complaints] = useCollection("complaints");
   const [tickets] = useCollection("tickets");
+  const [passengers] = useCollection("passengers");
 
   if (!currentUser) return null;
 
@@ -343,8 +343,9 @@ export default function Dashboard() {
 
   // 10. PASSENGER DASHBOARD
   const renderPassenger = () => {
-    // Passenger David Miller is pas-miller
-    const myBookings = bookings.filter(b => b.passengerId === "pas-miller");
+    const myPassenger = passengers.find(p => p.email === currentUser.email);
+    const myPassengerId = myPassenger ? myPassenger.id : currentUser.uid;
+    const myBookings = bookings.filter(b => b.passengerId === myPassengerId);
     return (
       <div>
         <div style={{ padding: "24px", backgroundColor: "linear-gradient(135deg, #00b4d810, #7209b710)", border: "1px solid var(--border-color)", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "24px" }}>

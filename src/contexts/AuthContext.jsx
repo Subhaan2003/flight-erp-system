@@ -43,9 +43,13 @@ export function AuthProvider({ children }) {
         if (fbUser) {
           try {
             const profile = await fsGetUserProfile(fbUser.uid);
-            setCurrentUser(buildProfileFromAuthUser(fbUser, profile || {}));
+            const user = buildProfileFromAuthUser(fbUser, profile || {});
+            setCurrentUser(user);
+            localStorage.setItem("aero_current_user", JSON.stringify(user));
           } catch {
-            setCurrentUser(buildProfileFromAuthUser(fbUser, {}));
+            const user = buildProfileFromAuthUser(fbUser, {});
+            setCurrentUser(user);
+            localStorage.setItem("aero_current_user", JSON.stringify(user));
           }
         } else {
           setCurrentUser(null);

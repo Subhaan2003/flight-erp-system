@@ -37,6 +37,16 @@ export default function CustomerSupport() {
 
   const [complaintForm, setComplaintForm] = useState({ name: "", email: "", message: "", type: "General", rating: 5 });
 
+  useEffect(() => {
+    if (currentUser) {
+      setComplaintForm(prev => ({
+        ...prev,
+        name: currentUser.displayName || "",
+        email: currentUser.email || ""
+      }));
+    }
+  }, [currentUser]);
+
   // Chat state
   const [chatMessages, setChatMessages] = useState([
     { from: "bot", text: "Hello! I'm AeroBot, your 24/7 virtual assistant. How can I help you today? Ask about bookings, baggage, check-in, or delays!" }
@@ -66,7 +76,7 @@ export default function CustomerSupport() {
     logSystemAction(currentUser.uid, currentUser.email, "Submit Complaint", "Customer Support", "", complaintForm.type);
     sendSystemNotification({ title: "New Support Case", message: `New ${complaintForm.type} complaint submitted by ${complaintForm.name}.`, type: "warning" });
     setShowComplaintModal(false);
-    setComplaintForm({ name: "", email: "", message: "", type: "General", rating: 5 });
+    setComplaintForm({ name: currentUser?.displayName || "", email: currentUser?.email || "", message: "", type: "General", rating: 5 });
   };
 
   const handleSendReply = () => {
